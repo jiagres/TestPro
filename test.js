@@ -12,6 +12,6 @@ str_pretty1 = JSON.stringify(str)
 //console.log(str_pretty1.name);
 console.log(typeof(str_pretty1))
 filestr='sandbox-ohio_automations_1.0.0.md';
-var filepath = (filestr.split("_"))[0];
-var environment_name = (filepath.split("/"))[2];
-console.log(environment_name);
+filestr='';
+var env = (filestr.split("_"))[0];
+console.log(env);
