@@ -1,10 +1,10 @@
 'use strict';
 
 const AWS = require('aws-sdk');
+require('dotenv').config();
 AWS.config = {
     "region": process.env.REGION
 };
-AWS.config.region = 'ca-central-1';
 var apigateway = new AWS.APIGateway();
 
 // var params = {
