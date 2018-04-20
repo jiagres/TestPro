@@ -67,23 +67,48 @@ function getUserPoolId(poolName, cognito, callback) {
   });
 };
 
-getUserPoolId('JillTestUserPool', cognito, function (err, data) {
-  if (err) console.log(err);
-  else console.log(data);
-});
+// getUserPoolId('JillTestUserPool', cognito, function (err, data) {
+//   if (err) console.log(err);
+//   else console.log(data);
+// });
 
-function createUser() {
-  var params = {
-    UserPoolId: process.env.USER_POOL, /* required */
-    Username: userName, /* required */
-    TemporaryPassword: password
-  };
-  cognito.adminCreateUser(params, function (err, data) {
-    if (err) {
-      return callback(err, null); // an error occurred
-    }
-    else {
-      return callback(null, data);
-    }       // successful response
+function createUser (userName, password, cognito, callback) {
+  getUserPoolId(process.env.USER_POOL, cognito, function (err, poolId) {
+      if (err) {
+          return callback(err, null);
+      }
+      else {
+          if (poolId == null) {
+              console.log('not found UserPoolId for UserPool' + process.env.USER_POOL);
+              return callback();
+          }
+          else {
+              var params = {
+                  UserPoolId: poolId, /* required */
+                  Username: userName, /* required */
+                  TemporaryPassword: password
+              };
+              cognito.adminCreateUser(params, function (err, data) {
+                  if (err) {
+                      return callback(err, null); // an error occurred
+                  }
+                  else {
+                      return callback(null, data); // successful response
+                  }
+              });
+          }
+      }
   });
-}
+
+};
+
+//createUserPool();
+
+createUser('jerry','Test@123456',cognito, function(err,data){
+  if(err){
+    console.log(err);
+  }
+  else{
+    console.log(data);
+  }
+});
