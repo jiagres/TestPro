@@ -582,7 +582,7 @@ function updatePassword(appClientName, poolName, userName, cognito, secretsmanag
 
 updatePassword(appClientName,poolName,'userjerry7',cognito,secretsmanager,function(err,data){
     if(err){
-
+      console.log(err);
   }
   else{
     console.log(data);
