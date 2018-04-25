@@ -250,71 +250,47 @@ function generateUserName(appName, poolName, cognito, callback) {
   let result ={"username":"","password":""};
   getUserPoolId(poolName, cognito, function (err, poolId) {
     if (err) {
-      return callback(err, null);
+        return callback(err, null);
     }
     else {
-      if (poolId == null) {
-        console.log('not found UserPoolId for UserPool' + poolName);
-        return callback();
-      }
-      else {
-        var params = {
-          UserPoolId: poolId, /* required */
-          Username: userName /* required */
-        };
-        cognito.adminGetUser(params, function (err, data) {
-          if (err) {
-            if (err.code == 'UserNotFoundException') {
-              createUser(appClientName, poolName, userName, secretsmanager, cognito, function (err, data) {
-                if (err) {
-                  return callback(err,null);
-                }
-                else {
-                  result.username=data.User.Username;
-                  result.password=data.User.password;
-                  return callback(null,result);
-                }
-              });
-            }
-            else {
-              console.log(err);
-              return callback(err, null);
-            }
-          }
-          else {
+        if (poolId == null) {
+            console.log('not found UserPoolId for UserPool' + poolName);
+            return callback();
+        }
+        else {
             var params = {
-              UserPoolId: poolId,
-              Filter: 'username^="' + preUserName + '"',
-              Limit: 60
+                UserPoolId: poolId,
+                Filter: 'username^="' + preUserName + '"',
+                Limit: 60
             };
             cognito.listUsers(params, function (err, data) {
-              if (err) console.log(err, err.stack); // an error occurred
-              else {
-                var noList=[];
-                for (var index in data.Users) {
-                  var num=data.Users[index].Username.substring(preUserName.length);
-                  if (isNumber(num)) {
-                    noList.push(num);
-                  }
+                if (err) console.log(err, err.stack); // an error occurred
+                else {
+                    var noList = [];
+                    for (var index in data.Users) {
+                        var num = data.Users[index].Username.substring(preUserName.length);
+                        if (isNumber(num)) {
+                            noList.push(num);
+                        }
+                    }
+                    if (noList.length > 0) {
+                        userName = preUserName + (Math.max.apply(null, noList) + 1);
+                    }
+                    createUser(appClientName, poolName, userName, secretsmanager, cognito, function (err, data) {
+                        if (err) {
+                            return callback(err, null);
+                        }
+                        else {
+                            result.username = data.User.Username;
+                            result.password = data.User.password;
+                            return callback(null, result);
+                        }
+                    });
                 }
-                userName=preUserName+(Math.max.apply(null,noList)+1);
-                createUser(appClientName, poolName, userName, secretsmanager, cognito, function (err, data) {
-                  if (err) {
-                    return callback(err,null);
-                  }
-                  else {
-                    result.username=data.User.Username;
-                    result.password=data.User.password;
-                    return callback(null,result);
-                  }
-                });
-              }
             });
-          }
-        });
-      }
+        }
     }
-  })
+})
 }
 
 // getUserPoolId('JillTestUserPool', cognito, function (err, data) {
@@ -580,21 +556,21 @@ function updatePassword(appClientName, poolName, userName, cognito, secretsmanag
 //   }
 // });
 
-updatePassword(appClientName,poolName,'userjerry7',cognito,secretsmanager,function(err,data){
-    if(err){
-      console.log(err);
-  }
-  else{
-    console.log(data);
-  }
-})
-
-// generateUserName('jerry', poolName, cognito, function (err, data) {
-//   if (err) {
-
+// updatePassword(appClientName,poolName,'userjerry7',cognito,secretsmanager,function(err,data){
+//     if(err){
+//       console.log(err);
 //   }
-//   else {
+//   else{
 //     console.log(data);
 //   }
 // })
+
+generateUserName('jerry', poolName, cognito, function (err, data) {
+  if (err) {
+
+  }
+  else {
+    console.log(data);
+  }
+})
 
