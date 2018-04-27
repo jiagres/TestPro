@@ -26,13 +26,12 @@ function getApiKeys() {
 
 function createUserPool() {
   var params = {
-    PoolName: 'jerrytest', /* required */
+    PoolName: 'apiauthorization', /* required */
     Policies: {
       PasswordPolicy: {
         MinimumLength: 8,
         RequireLowercase: true,
         RequireNumbers: true,
-        RequireSymbols: true,
         RequireUppercase: true
       }
     }
@@ -493,14 +492,14 @@ function updatePassword(appClientName, poolName, userName, cognito, secretsmanag
 
 //createUserPool();
 
-// createAppClient(cognito, function (err, data) {
-//   if (err) {
-//     console.log(err);
-//   }
-//   else {
-//     console.log(data);
-//   }
-// })
+createAppClient(cognito, function (err, data) {
+  if (err) {
+    console.log(err);
+  }
+  else {
+    console.log(data);
+  }
+})
 
 // getAppClientId(cognito,function(err,data){
 //     if (err) {
@@ -565,12 +564,12 @@ function updatePassword(appClientName, poolName, userName, cognito, secretsmanag
 //   }
 // })
 
-generateUserName('jerry', poolName, cognito, function (err, data) {
-  if (err) {
+// generateUserName('jerry', poolName, cognito, function (err, data) {
+//   if (err) {
 
-  }
-  else {
-    console.log(data);
-  }
-})
+//   }
+//   else {
+//     console.log(data);
+//   }
+// })
 
