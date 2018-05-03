@@ -8,6 +8,7 @@ AWS.config = {
 var apigateway = new AWS.APIGateway();
 var cognito = new AWS.CognitoIdentityServiceProvider();
 var secretsmanager = new AWS.SecretsManager();
+var sqs = new AWS.SQS();
 var appClientName = process.env.APP_CLIENT_NAME;
 var poolName = process.env.USER_POOL;
 function getApiKeys() {
@@ -490,16 +491,32 @@ function updatePassword(appClientName, poolName, userName, cognito, secretsmanag
   })
 };
 
+function createSQS(sqs){
+  var params = {
+    QueueName: 'Queue_JerryTest' /* required */
+    // Attributes: {
+    //   '<QueueAttributeName>': 'STRING_VALUE',
+    //   /* '<QueueAttributeName>': ... */
+    // }
+  };
+  sqs.createQueue(params, function(err, data) {
+    if (err) console.log(err, err.stack); // an error occurred
+    else     console.log(data);           // successful response
+  });
+}
+
+createSQS(sqs);
+
 //createUserPool();
 
-createAppClient(cognito, function (err, data) {
-  if (err) {
-    console.log(err);
-  }
-  else {
-    console.log(data);
-  }
-})
+// createAppClient(cognito, function (err, data) {
+//   if (err) {
+//     console.log(err);
+//   }
+//   else {
+//     console.log(data);
+//   }
+// })
 
 // getAppClientId(cognito,function(err,data){
 //     if (err) {
