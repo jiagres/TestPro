@@ -9,6 +9,7 @@ var apigateway = new AWS.APIGateway();
 var cognito = new AWS.CognitoIdentityServiceProvider();
 var secretsmanager = new AWS.SecretsManager();
 var sqs = new AWS.SQS();
+var ssm = new AWS.SSM();
 var appClientName = process.env.APP_CLIENT_NAME;
 var poolName = process.env.USER_POOL;
 function getApiKeys() {
@@ -237,60 +238,60 @@ function createAppClient(cognito, callback) {
 function isNumber(value) {
   var patrn = /^(-)?\d+(\.\d+)?$/;
   if (patrn.exec(value) == null || value == "") {
-      return false
+    return false
   } else {
-      return true
+    return true
   }
 }
 
 function generateUserName(appName, poolName, cognito, callback) {
   var i = 1;
-  let preUserName='user' + appName.split(" ")[0];
-  let userName =preUserName + i;
-  let result ={"username":"","password":""};
+  let preUserName = 'user' + appName.split(" ")[0];
+  let userName = preUserName + i;
+  let result = { "username": "", "password": "" };
   getUserPoolId(poolName, cognito, function (err, poolId) {
     if (err) {
-        return callback(err, null);
+      return callback(err, null);
     }
     else {
-        if (poolId == null) {
-            console.log('not found UserPoolId for UserPool' + poolName);
-            return callback();
-        }
-        else {
-            var params = {
-                UserPoolId: poolId,
-                Filter: 'username^="' + preUserName + '"',
-                Limit: 60
-            };
-            cognito.listUsers(params, function (err, data) {
-                if (err) console.log(err, err.stack); // an error occurred
-                else {
-                    var noList = [];
-                    for (var index in data.Users) {
-                        var num = data.Users[index].Username.substring(preUserName.length);
-                        if (isNumber(num)) {
-                            noList.push(num);
-                        }
-                    }
-                    if (noList.length > 0) {
-                        userName = preUserName + (Math.max.apply(null, noList) + 1);
-                    }
-                    createUser(appClientName, poolName, userName, secretsmanager, cognito, function (err, data) {
-                        if (err) {
-                            return callback(err, null);
-                        }
-                        else {
-                            result.username = data.User.Username;
-                            result.password = data.User.password;
-                            return callback(null, result);
-                        }
-                    });
-                }
+      if (poolId == null) {
+        console.log('not found UserPoolId for UserPool' + poolName);
+        return callback();
+      }
+      else {
+        var params = {
+          UserPoolId: poolId,
+          Filter: 'username^="' + preUserName + '"',
+          Limit: 60
+        };
+        cognito.listUsers(params, function (err, data) {
+          if (err) console.log(err, err.stack); // an error occurred
+          else {
+            var noList = [];
+            for (var index in data.Users) {
+              var num = data.Users[index].Username.substring(preUserName.length);
+              if (isNumber(num)) {
+                noList.push(num);
+              }
+            }
+            if (noList.length > 0) {
+              userName = preUserName + (Math.max.apply(null, noList) + 1);
+            }
+            createUser(appClientName, poolName, userName, secretsmanager, cognito, function (err, data) {
+              if (err) {
+                return callback(err, null);
+              }
+              else {
+                result.username = data.User.Username;
+                result.password = data.User.password;
+                return callback(null, result);
+              }
             });
-        }
+          }
+        });
+      }
     }
-})
+  })
 }
 
 // getUserPoolId('JillTestUserPool', cognito, function (err, data) {
@@ -472,26 +473,26 @@ function resetPassword(userName, cognito, callback) {
 
 function updatePassword(appClientName, poolName, userName, cognito, secretsmanager, callback) {
   let result = { "username": "", "password": "" };
-  deleteUser(userName,cognito,function(err,data){
-      if(err){
-          return callback(err,null);
-      }
-      else{
-          createUser(appClientName, poolName, userName, secretsmanager, cognito, function (err, data) {
-              if (err) {
-                  return callback(err, null);
-              }
-              else {
-                  result.username = data.User.Username;
-                  result.password = data.User.password;
-                  return callback(null, result);
-              }
-          });
-      }
+  deleteUser(userName, cognito, function (err, data) {
+    if (err) {
+      return callback(err, null);
+    }
+    else {
+      createUser(appClientName, poolName, userName, secretsmanager, cognito, function (err, data) {
+        if (err) {
+          return callback(err, null);
+        }
+        else {
+          result.username = data.User.Username;
+          result.password = data.User.password;
+          return callback(null, result);
+        }
+      });
+    }
   })
 };
 
-function createSQS(sqs){
+function createSQS(sqs) {
   var params = {
     QueueName: 'Queue_JerryTest' /* required */
     // Attributes: {
@@ -499,13 +500,41 @@ function createSQS(sqs){
     //   /* '<QueueAttributeName>': ... */
     // }
   };
-  sqs.createQueue(params, function(err, data) {
+  sqs.createQueue(params, function (err, data) {
     if (err) console.log(err, err.stack); // an error occurred
-    else     console.log(data);           // successful response
+    else console.log(data);           // successful response
   });
 }
 
-createSQS(sqs);
+function getParameter(paramName) {
+  var params = {
+    Name: paramName, /* required */
+    WithDecryption: true
+  };
+  ssm.getParameter(params, function (err, data) {
+    if (err) console.log(err, err.stack); // an error occurred
+    else console.log(data);           // successful response
+  });
+}
+
+function createParameter(paramName, paramValue) {
+  var params = {
+    Name: paramName, /* required */
+    Type: 'SecureString', /* required */
+    Value: paramValue, /* required */
+    Overwrite: true
+  };
+  ssm.putParameter(params, function (err, data) {
+    if (err) console.log(err, err.stack); // an error occurred
+    else console.log(data);           // successful response
+  });
+}
+
+createParameter('jerrytest','test');
+
+//getParameter('database_aas');
+
+//createSQS(sqs);
 
 //createUserPool();
 
