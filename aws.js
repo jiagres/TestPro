@@ -512,7 +512,7 @@ function getParameter(paramName) {
     WithDecryption: true
   };
   ssm.getParameter(params, function (err, data) {
-    if (err) console.log(err, err.stack); // an error occurred
+    if (err) console.log(err.code); // an error occurred
     else console.log(data);           // successful response
   });
 }
@@ -530,9 +530,9 @@ function createParameter(paramName, paramValue) {
   });
 }
 
-createParameter('jerrytest','test');
+//createParameter('jerrytest1',new Buffer('jerrytest1:test').toString('base64'));
 
-//getParameter('database_aas');
+getParameter('jerrytest1');
 
 //createSQS(sqs);
 
