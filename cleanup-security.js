@@ -1,11 +1,11 @@
 'use strict'
 var AWS = require('aws-sdk');
-// let proxy = require('proxy-agent')
-// AWS.config.httpOptions = {
-//     agent: proxy("http://proxy.houston.hp.com:8080")
-//   }
+let proxy = require('proxy-agent')
+AWS.config.httpOptions = {
+    agent: proxy("http://proxy.houston.hp.com:8080")
+  }
 // Set the region 
-let region = 'ca-central-1'
+let region = 'us-east-2'
 console.log(region);
 AWS.config.update({ region: region });
 let ssm = new AWS.SSM();
