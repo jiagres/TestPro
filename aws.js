@@ -506,14 +506,21 @@ function createSQS(sqs) {
   });
 }
 
-function getParameter(paramName) {
+function getParameter(paramName, decode) {
   var params = {
     Name: paramName, /* required */
     WithDecryption: true
   };
   ssm.getParameter(params, function (err, data) {
     if (err) console.log(err.code); // an error occurred
-    else console.log(data);           // successful response
+    else{
+      if(decode){
+        console.log(new Buffer(data.Parameter.Value, 'base64').toString())
+      }
+      else{
+      console.log(data); 
+      }
+    }           // successful response
   });
 }
 
@@ -532,7 +539,7 @@ function createParameter(paramName, paramValue) {
 
 //createParameter('jerrytest1',new Buffer('jerrytest1:test').toString('base64'));
 
-getParameter('jerrytest1');
+getParameter('infApiUser',true);
 
 //createSQS(sqs);
 
