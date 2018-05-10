@@ -506,21 +506,19 @@ function createSQS(sqs) {
   });
 }
 
-function getParameter(paramName, decode) {
+function getParameter(paramName, isDecode) {
   var params = {
     Name: paramName, /* required */
     WithDecryption: true
   };
   ssm.getParameter(params, function (err, data) {
     if (err) console.log(err.code); // an error occurred
-    else{
-      if(decode){
-        console.log(new Buffer(data.Parameter.Value, 'base64').toString())
+    else {
+      if (isDecode) {
+        data.Parameter.Value = new Buffer(data.Parameter.Value, 'base64').toString();
       }
-      else{
-      console.log(data); 
-      }
-    }           // successful response
+      console.log(data);
+    }
   });
 }
 
@@ -539,17 +537,17 @@ function createParameter(paramName, paramValue) {
 
 //createParameter('jerrytest1',new Buffer('jerrytest1:test').toString('base64'));
 
-//getParameter('infApiUser',true);
+getParameter('infApiUser', true);
 
-adminInitiateAuth('apiauthorization-app-client','apiauthorization','infApiUser','D9VxsaQYuwPnSNcFPMe2hi20vcNiWnd6',cognito,secretsmanager,function(err,data){
-  if(err){
-    console.log(err);
-  }
-  else
-  {
-    console.log(data);
-  }
-})
+// adminInitiateAuth('apiauthorization-app-client','apiauthorization','infApiUser','D9VxsaQYuwPnSNcFPMe2hi20vcNiWnd6',cognito,secretsmanager,function(err,data){
+//   if(err){
+//     console.log(err);
+//   }
+//   else
+//   {
+//     console.log(data);
+//   }
+// })
 
 //createSQS(sqs);
 
