@@ -514,6 +514,9 @@ function getParameter(paramName, isDecode) {
   ssm.getParameter(params, function (err, data) {
     if (err) console.log(err.code); // an error occurred
     else {
+      if(data){
+        console.log('data existed');
+      }
       if (isDecode) {
         data.Parameter.Value = new Buffer(data.Parameter.Value, 'base64').toString();
       }
@@ -537,9 +540,9 @@ function createParameter(paramName, paramValue) {
 
 //createParameter('jerrytest1',new Buffer('jerrytest1:test').toString('base64'));
 
-getParameter('infApiUser', true);
+getParameter('evtApiUser', true);
 
-// adminInitiateAuth('apiauthorization-app-client','apiauthorization','infApiUser','D9VxsaQYuwPnSNcFPMe2hi20vcNiWnd6',cognito,secretsmanager,function(err,data){
+// adminInitiateAuth('apiauthorization-app-client','apiauthorization','evtApiUser','A975kuVGhxD3DDD1anlJ4QIh0sR739dv',cognito,secretsmanager,function(err,data){
 //   if(err){
 //     console.log(err);
 //   }
