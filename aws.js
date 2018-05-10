@@ -539,7 +539,17 @@ function createParameter(paramName, paramValue) {
 
 //createParameter('jerrytest1',new Buffer('jerrytest1:test').toString('base64'));
 
-getParameter('infApiUser',true);
+//getParameter('infApiUser',true);
+
+adminInitiateAuth('apiauthorization-app-client','apiauthorization','infApiUser','D9VxsaQYuwPnSNcFPMe2hi20vcNiWnd6',cognito,secretsmanager,function(err,data){
+  if(err){
+    console.log(err);
+  }
+  else
+  {
+    console.log(data);
+  }
+})
 
 //createSQS(sqs);
 
