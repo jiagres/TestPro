@@ -540,7 +540,7 @@ function createParameter(paramName, paramValue) {
 
 //createParameter('jerrytest1',new Buffer('jerrytest1:test').toString('base64'));
 
-//getParameter('infApiUser', true);
+getParameter('infApiUser', false);
 
 // adminInitiateAuth('apiauthorization-app-client','apiauthorization','evtApiUser','A975kuVGhxD3DDD1anlJ4QIh0sR739dv',cognito,secretsmanager,function(err,data){
 //   if(err){
