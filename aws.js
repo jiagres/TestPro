@@ -540,7 +540,7 @@ function createParameter(paramName, paramValue) {
 
 //createParameter('jerrytest1',new Buffer('jerrytest1:test').toString('base64'));
 
-getParameter('evtApiUser', true);
+//getParameter('infApiUser', true);
 
 // adminInitiateAuth('apiauthorization-app-client','apiauthorization','evtApiUser','A975kuVGhxD3DDD1anlJ4QIh0sR739dv',cognito,secretsmanager,function(err,data){
 //   if(err){
@@ -574,7 +574,7 @@ getParameter('evtApiUser', true);
 //   }
 // })
 
-// createUser(appClientName,poolName,'jerry',secretsmanager,cognito, function(err,data){
+// createUser(appClientName,poolName,'infApiUser',secretsmanager,cognito, function(err,data){
 //   if(err){
 // //console.log(err);
 //   }
@@ -636,4 +636,7 @@ getParameter('evtApiUser', true);
 //     console.log(data);
 //   }
 // })
+
+// var paramValue = new Buffer('infApiUser:xxxxx').toString('base64');
+// console.log(paramValue);
 
