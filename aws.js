@@ -537,12 +537,19 @@ function createParameter(paramName, paramValue) {
     else console.log(data);           // successful response
   });
 }
+// var a="aaa", b="aaa"
+// var c="uuu", d="uuu"
+// if(a==b & c==d){
+//   console.log('1 and 2 match codition')
+// }else{
+  
+// }
 
 //createParameter('jerrytest1',new Buffer('jerrytest1:test').toString('base64'));
 
 getParameter('infApiUser', false);
 
-// adminInitiateAuth('apiauthorization-app-client','apiauthorization','evtApiUser','A975kuVGhxD3DDD1anlJ4QIh0sR739dv',cognito,secretsmanager,function(err,data){
+// adminInitiateAuth('apiauthorization-app-client','apiauthorization','infApiUser','hc9VSV5pXR5zaP2o4AvnibO7c62vnWDY',cognito,secretsmanager,function(err,data){
 //   if(err){
 //     console.log(err);
 //   }
