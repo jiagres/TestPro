@@ -542,12 +542,8 @@ function createParameter(paramName, paramValue) {
 
 function addPermission(sqs) {
   var params = {
-    AWSAccountIds: [ /* required */
-      '890403726045',
-      /* more items */
-    ],
+    AWSAccountIds: ['*'],    
     Actions: [ /* required */
-      'ReceiveMessage',
       'SendMessage'
       /* more items */
     ],
@@ -560,10 +556,70 @@ function addPermission(sqs) {
   });
 }
 
-function setSubScriptionAttribute(sns){
-
+function addPerm(sqs){
+  var policy = {
+    "Version": "2012-10-17",
+    "Id": "Queue_Policy",
+    "Statement": 
+      {
+         "Sid":"Queue_AnonymousAccess_ReceiveMessage",
+         "Effect": "Allow",
+         "Principal": "*",
+         "Action": "sqs:SendMessage",
+         "Resource": "arn:aws:sqs:us-east-2:890403726045:Queue_JerryTest"
+      }
+  }
+  
+  sqs.setQueueAttributes({
+    QueueUrl: 'https://sqs.us-east-2.amazonaws.com/890403726045/Queue_JerryTest',
+    Attributes: {
+      Policy: JSON.stringify(policy)
+    }
+  }, function (err, data) {
+    if (err) console.log(err, err.stack); // an error occurred
+    else console.log(data);           // successful response
+  });
 }
 
+function setSubScriptionAttribute(sns) {
+  var params = {
+    AttributeName: 'RawMessageDelivery', /* required */
+    SubscriptionArn: 'arn:aws:sns:us-east-2:890403726045:JerryTest:943014fb-fc49-4c14-b38f-2c7b4da27098', /* required */
+    AttributeValue: 'true'
+  };
+  sns.setSubscriptionAttributes(params, function (err, data) {
+    if (err) console.log(err, err.stack); // an error occurred
+    else console.log(data);           // successful response
+  });
+}
+
+function subScribe(sns,topicArn,queueArn,apiName){
+  var params = {
+    Protocol: 'sqs', /* required */
+    TopicArn: topicArn, /* required */
+    Attributes: {
+      'RawMessageDelivery':'true',
+      'FilterPolicy':'{"apiName": ["'+apiName+'"]}'
+    },
+    Endpoint: queueArn,
+    ReturnSubscriptionArn: true
+  };
+  sns.subscribe(params, function(err, data) {
+    if (err) console.log(err, err.stack); // an error occurred
+    else     console.log(data);           // successful response
+  });
+}
+
+function getQueueUrl(sql)
+{
+  var params = {
+    QueueName: 'Queue_JerryTest', /* required */
+  };
+  sqs.getQueueUrl(params, function(err, data) {
+    if (err) console.log(err, err.stack); // an error occurred
+    else     console.log(data);           // successful response
+  });
+}
 
 // var a="aaa", b="aaa"
 // var c="uuu", d="uuu"
@@ -675,5 +731,12 @@ function setSubScriptionAttribute(sns){
 // var paramValue = new Buffer('infApiUser:xxxxx').toString('base64');
 // console.log(paramValue);
 
-addPermission(sqs);
+//addPermission(sqs);
+//addPerm(sqs);
+getQueueUrl(sqs);
+var apiName='test';
+var topicArn='arn:aws:sns:us-east-2:890403726045:JerryTest';
+var queueArn='arn:aws:sqs:us-east-2:890403726045:Queue_JerryTest';
+//subScribe(sns,topicArn,queueArn,apiName)
+// setSubScriptionAttribute(sns);
 
