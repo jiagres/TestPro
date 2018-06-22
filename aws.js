@@ -9,6 +9,7 @@ var apigateway = new AWS.APIGateway();
 var cognito = new AWS.CognitoIdentityServiceProvider();
 var secretsmanager = new AWS.SecretsManager();
 var sqs = new AWS.SQS();
+var sns = new AWS.SNS();
 var ssm = new AWS.SSM();
 var appClientName = process.env.APP_CLIENT_NAME;
 var poolName = process.env.USER_POOL;
@@ -514,7 +515,7 @@ function getParameter(paramName, isDecode) {
   ssm.getParameter(params, function (err, data) {
     if (err) console.log(err.code); // an error occurred
     else {
-      if(data){
+      if (data) {
         console.log('data existed');
       }
       if (isDecode) {
@@ -537,17 +538,44 @@ function createParameter(paramName, paramValue) {
     else console.log(data);           // successful response
   });
 }
+
+
+function addPermission(sqs) {
+  var params = {
+    AWSAccountIds: [ /* required */
+      '890403726045',
+      /* more items */
+    ],
+    Actions: [ /* required */
+      'ReceiveMessage',
+      'SendMessage'
+      /* more items */
+    ],
+    Label: 'jerrylabel_1', /* required */
+    QueueUrl: 'https://sqs.us-east-2.amazonaws.com/890403726045/Queue_JerryTest' /* required */
+  };
+  sqs.addPermission(params, function (err, data) {
+    if (err) console.log(err, err.stack); // an error occurred
+    else console.log(data);           // successful response
+  });
+}
+
+function setSubScriptionAttribute(sns){
+
+}
+
+
 // var a="aaa", b="aaa"
 // var c="uuu", d="uuu"
 // if(a==b & c==d){
 //   console.log('1 and 2 match codition')
 // }else{
-  
+
 // }
 
 //createParameter('jerrytest1',new Buffer('jerrytest1:test').toString('base64'));
 
-getParameter('infApiUser', false);
+//getParameter('infApiUser', false);
 
 // adminInitiateAuth('apiauthorization-app-client','apiauthorization','infApiUser','hc9VSV5pXR5zaP2o4AvnibO7c62vnWDY',cognito,secretsmanager,function(err,data){
 //   if(err){
@@ -646,4 +674,6 @@ getParameter('infApiUser', false);
 
 // var paramValue = new Buffer('infApiUser:xxxxx').toString('base64');
 // console.log(paramValue);
+
+addPermission(sqs);
 
