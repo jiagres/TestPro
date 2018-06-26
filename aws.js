@@ -841,6 +841,28 @@ var subject = 'jerrytesthello_01'
 //   }
 // })
 
+var request={
+  "Customer": "intgTest",
+  "APIName": "apiName",
+  "SourceSystem": "",
+  "RouteKey": "intgTestK",
+  "RouteType": "lambda",
+  "RouteRegion": "region",
+  "RouteAccount": "accountid",
+  "RouteRole": "",
+  "RouteInfo": "infRouteTest1",
+  "RouteAuth": "",
+  "AuthParameter":{
+  "authType":"oauth",
+  "authParams":{
+          "tokenUrl":"",
+          "headers": {
+              "Content-Type": "application/x-www-form-urlencoded"
+          },
+          "body": "grant_type=client_credentials&redirect_uri=https://localhost/"
+  }}
+};
+
 publishMsgToTopic(topicArn, sns, subject, message, function (err, data) {
   if (err) {
     console.log(err);
