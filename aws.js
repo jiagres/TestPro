@@ -678,6 +678,29 @@ function removeSubScribe(topicArn, queueArn, sns, callback) {
   })
 }
 
+function publishMsgToTopic(topicArn, sns, subject, message, callback) {
+  var params = {
+    Message: message, /* required */
+    MessageAttributes: {
+      'apiName': {
+        DataType: 'String', /* required */
+        StringValue: 'test'
+      }
+    },
+    Subject: subject,
+    TopicArn: topicArn
+  };
+  sns.publish(params, function (err, data) {
+    if (err) {
+      return callback(err);
+    }
+    else {
+      return callback(null, data);
+    }          // successful response
+  });
+}
+
+
 // var a="aaa", b="aaa"
 // var c="uuu", d="uuu"
 // if(a==b & c==d){
@@ -791,10 +814,14 @@ function removeSubScribe(topicArn, queueArn, sns, callback) {
 //addPermission(sqs);
 //addPerm(sqs);
 //getQueueUrl(sqs);
+
 var apiName = 'test';
 var topicArn = 'arn:aws:sns:us-east-2:890403726045:JerryTest';
 var queueArn = 'arn:aws:sqs:us-east-2:890403726045:Queue_JerryTest';
-subScribe(sns,topicArn,queueArn,apiName)
+var message = 'HelloWorld';
+var subject = 'jerrytesthello_01'
+
+//subScribe(sns, topicArn, queueArn, apiName)
 
 // getSubScribeArnByQueueArn(topicArn, queueArn, sns, function (err, data) {
 //   if (err) {
@@ -813,3 +840,12 @@ subScribe(sns,topicArn,queueArn,apiName)
 //     console.log(data);
 //   }
 // })
+
+publishMsgToTopic(topicArn, sns, subject, message, function (err, data) {
+  if (err) {
+    console.log(err);
+  }
+  else {
+    console.log(data);
+  }
+})
