@@ -610,13 +610,19 @@ function subScribe(sns, topicArn, queueArn, apiName) {
   });
 }
 
-function getQueueUrl(sql) {
+function getQueueUrl(sqs, queue, callback) {
   var params = {
-    QueueName: 'Queue_JerryTest', /* required */
+    QueueName: queue /* required */
   };
   sqs.getQueueUrl(params, function (err, data) {
-    if (err) console.log(err, err.stack); // an error occurred
-    else console.log(data);           // successful response
+    if (err) {
+      console.log(err, err.stack); // an error occurred
+      return callback(err);
+    }
+    else {
+      console.log(data);           // successful response
+      return callback(null,data);
+    }
   });
 }
 
@@ -700,6 +706,39 @@ function publishMsgToTopic(topicArn, sns, subject, message, callback) {
   });
 }
 
+function removePermission(){
+  var params = {
+    Label: 'STRING_VALUE', /* required */
+    QueueUrl: 'STRING_VALUE' /* required */
+  };
+  sqs.removePermission(params, function(err, data) {
+    if (err) console.log(err, err.stack); // an error occurred
+    else     console.log(data);           // successful response
+  });
+}
+
+function receiveMessage(queueName, sqs, callback){
+  getQueueUrl(sqs, queueName, function(err,data){
+    if(err){
+      return callback(err);
+    }
+    else{
+      var params = {
+        QueueUrl: data.QueueUrl
+      };
+      sqs.receiveMessage(params, function(err, result) {
+        if (err) {
+          console.log(err, err.stack); // an error occurred
+          return callback(err);
+        }
+        else{
+               console.log(result);           // successful response
+               return callback(null,result);
+        }
+      });
+    }
+  })
+}
 
 // var a="aaa", b="aaa"
 // var c="uuu", d="uuu"
@@ -820,6 +859,8 @@ var topicArn = 'arn:aws:sns:us-east-2:890403726045:JerryTest';
 var queueArn = 'arn:aws:sqs:us-east-2:890403726045:Queue_JerryTest';
 var message = 'HelloWorld';
 var subject = 'jerrytesthello_01'
+topicArn ='arn:aws:sns:ca-central-1:890403726045:infAPIGW';
+queueArn ='arn:aws:sqs:ca-central-1:890403726045:Allentest';
 
 //subScribe(sns, topicArn, queueArn, apiName)
 
@@ -863,11 +904,31 @@ var request={
   }}
 };
 
-publishMsgToTopic(topicArn, sns, subject, message, function (err, data) {
-  if (err) {
+// publishMsgToTopic(topicArn, sns, subject, message, function (err, data) {
+//   if (err) {
+//     console.log(err);
+//   }
+//   else {
+//     console.log(data);
+//   }
+// })
+
+
+var test="arn:aws:sqs:ca-central-1:890403726045:Allentest"
+
+let pos =test.lastIndexOf(':')
+// get the queue name from the next poisition of last ':'
+let queue =test.substring(pos + 1) 
+//console.log(queue);
+
+
+//getQueueUrl(sqs,queue);
+var queueName ='Queue_JerryTest';
+receiveMessage(queueName,sqs, function(err,data){
+  if(err){
     console.log(err);
   }
-  else {
+  else{
     console.log(data);
   }
-})
+});
