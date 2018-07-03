@@ -852,9 +852,16 @@ function receiveMessage(queueName, sqs, callback){
 
 //addPermission(sqs);
 //addPerm(sqs);
-//getQueueUrl(sqs);
+// getQueueUrl(sqs,'infEventTest', function(err,data){
+//   if (err){
+//     console.log(err);
+//   }
+//   else{
+//     console.log(data);
+//   }
+// });
 
-var apiName = 'test';
+var apiName = 'test22';
 var topicArn = 'arn:aws:sns:us-east-2:890403726045:JerryTest';
 var queueArn = 'arn:aws:sqs:us-east-2:890403726045:Queue_JerryTest';
 var message = 'HelloWorld';
@@ -862,7 +869,7 @@ var subject = 'jerrytesthello_01'
 topicArn ='arn:aws:sns:ca-central-1:890403726045:infAPIGW';
 queueArn ='arn:aws:sqs:ca-central-1:890403726045:Allentest';
 
-//subScribe(sns, topicArn, queueArn, apiName)
+subScribe(sns, topicArn, queueArn, apiName)
 
 // getSubScribeArnByQueueArn(topicArn, queueArn, sns, function (err, data) {
 //   if (err) {
@@ -924,11 +931,12 @@ let queue =test.substring(pos + 1)
 
 //getQueueUrl(sqs,queue);
 var queueName ='Queue_JerryTest';
-receiveMessage(queueName,sqs, function(err,data){
-  if(err){
-    console.log(err);
-  }
-  else{
-    console.log(data);
-  }
-});
+
+// receiveMessage(queueName,sqs, function(err,data){
+//   if(err){
+//     console.log(err);
+//   }
+//   else{
+//     console.log(data);
+//   }
+// });
