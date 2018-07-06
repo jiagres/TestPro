@@ -507,21 +507,22 @@ function createSQS(sqs) {
   });
 }
 
-function getParameter(paramName, isDecode) {
+function getParameter(paramName, isDecode, callback) {
   var params = {
     Name: paramName, /* required */
     WithDecryption: true
   };
   ssm.getParameter(params, function (err, data) {
-    if (err) console.log(err.code); // an error occurred
+    if (err) {
+      return callback(err);
+    } // an error occurred
     else {
       if (data) {
-        console.log('data existed');
+        return callback(null,data);
       }
       if (isDecode) {
-        data.Parameter.Value = new Buffer(data.Parameter.Value, 'base64').toString();
+        return callback(null,data.Parameter.Value = new Buffer(data.Parameter.Value, 'base64').toString());
       }
-      console.log(data);
     }
   });
 }
@@ -750,7 +751,18 @@ function receiveMessage(queueName, sqs, callback){
 
 //createParameter('jerrytest1',new Buffer('jerrytest1:test').toString('base64'));
 
-//getParameter('infApiUser', false);
+getParameter('inf_DEPLOY_CONFIGURATIONS', false, function(err,data){
+  if(err){
+    console.log(err);
+  }
+  else{
+    var envList=JSON.parse(data.Parameter.Value);
+    for(let item in envList){
+      console.log(envList[item].ENV_NAME);
+    }
+
+  }
+});
 
 // adminInitiateAuth('apiauthorization-app-client','apiauthorization','infApiUser','hc9VSV5pXR5zaP2o4AvnibO7c62vnWDY',cognito,secretsmanager,function(err,data){
 //   if(err){
@@ -869,7 +881,7 @@ var subject = 'jerrytesthello_01'
 topicArn ='arn:aws:sns:ca-central-1:890403726045:infAPIGW';
 queueArn ='arn:aws:sqs:ca-central-1:890403726045:Allentest';
 
-subScribe(sns, topicArn, queueArn, apiName)
+//subScribe(sns, topicArn, queueArn, apiName)
 
 // getSubScribeArnByQueueArn(topicArn, queueArn, sns, function (err, data) {
 //   if (err) {
@@ -940,3 +952,11 @@ var queueName ='Queue_JerryTest';
 //     console.log(data);
 //   }
 // });
+
+var test='dev2';
+if(test.toLowerCase().startsWith('dev')){
+  console.log('Pass');
+}
+else{
+  console.log('Not Pass');
+}
